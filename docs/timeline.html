@@ -384,12 +384,16 @@ const STEPS = [
     "✓ partials/_footer.html.twig : © GreenGoodies - {{ 'now'|date('Y') }}, l'année se met à jour toute seule",
     "✓ assets/styles/app.css (AssetMapper) : couleurs, police Inter et marges relevées dans Figma",
     "✓ make:controller Home : page d'accueil vide à l'adresse /, pour voir le gabarit",
-    "Images exportées de Figma, converties en WebP (green code)"
+    "✓ Green code : sensiolabs/minify-bundle, CSS et JS minifiés à asset-map:compile (app.css : 2 267 → 870 octets)",
+    "✓ Green code : logo converti en WebP (1 940 → 1 288 octets), console.log d'exemple retiré de app.js",
+    "Photos des produits exportées de Figma, converties en WebP (avec les pages)"
   ],
   pourquoi: [
     "Le menu et le pied de page sont écrits une seule fois : chaque page fait {% extends 'base.html.twig' %}.",
     "path('app_home') plutôt qu'une adresse écrite en dur : si l'adresse change, les liens suivent.",
-    "AssetMapper ajoute une empreinte au nom des fichiers (logo-icFYikt.png) : le navigateur peut les garder en cache sans risque."
+    "AssetMapper ajoute une empreinte au nom des fichiers (logo-y4N9VRM.webp) : le navigateur peut les garder en cache sans risque.",
+    "Minification : le cours s'arrête à asset-map:compile ; sensiolabs/minify-bundle (SensioLabs, créateurs de Symfony) se branche dessus. Mes commentaires restent dans app.css, seule la version envoyée au navigateur est compressée.",
+    "WebP : même image, fichier plus léger, donc moins de données transférées à chaque visite."
   ] },
 { titre: "Inscription et connexion", statut: "todo",
   objectif: "make:registration-form et make:security:form-login, validations et connexion automatique après inscription." },
