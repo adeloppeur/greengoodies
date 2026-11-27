@@ -1,3 +1,93 @@
+/* ==========================================================
+   GreenGoodies - styles du site (valeurs reprises de Figma)
+   ========================================================== */
+
+/* Couleurs de la maquette, rangées dans des variables pour les réutiliser */
+:root {
+    --fond: #FFFDF7;          /* fond crème du menu et des pages */
+    --bordure: #F6F5F0;       /* trait sous le menu */
+    --texte: #333333;         /* couleur du texte */
+    --vert-clair: #E8F0E3;    /* fond du bandeau "Bienvenue" de l'accueil */
+}
+
+/* Remise à zéro : sans ça chaque navigateur met ses propres marges */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    background-color: skyblue;
+    font-family: 'Inter', sans-serif;
+    color: var(--texte);
+    background-color: var(--fond);
+    min-height: 100vh;
+    display: flex;               /* le footer reste en bas même si la page est courte */
+    flex-direction: column;
+}
+
+a {
+    color: inherit;              /* les liens gardent la couleur du texte */
+    text-decoration: none;
+}
+
+/* Le contenu de la page prend toute la place entre le menu et le footer */
+.main {
+    flex: 1;
+}
+
+/* ---------- Menu (Figma : 81px de haut, marges 31px / 100px) ---------- */
+.header {
+    display: flex;
+    justify-content: space-between;   /* logo a gauche, liens a droite */
+    align-items: center;
+    padding: 31px 100px;
+    background-color: var(--fond);
+    border-bottom: 1px solid var(--bordure);
+}
+
+.header-logo img {
+    display: block;
+}
+
+.header-nav {
+    display: flex;
+    gap: 40px;                   /* espace entre les liens */
+}
+
+.header-nav a {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.header-nav a:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Pied de page ---------- */
+.footer {
+    display: flex;
+    justify-content: flex-end;   /* texte aligné a droite comme sur la maquette */
+    padding: 31px 100px;
+    background-color: #FFFFFF;
+    font-size: 14px;
+}
+
+/* ---------- Petits écrans : on réduit les marges ---------- */
+@media (max-width: 768px) {
+    .header,
+    .footer {
+        padding: 20px;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .header-nav {
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 }

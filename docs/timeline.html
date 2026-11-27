@@ -377,7 +377,20 @@ const STEPS = [
   ]
 },
 { titre: "Structure et design", statut: "current",
-  objectif: "base.html.twig avec le menu et le pied de page, CSS fidèle aux maquettes Figma." },
+  objectif: "base.html.twig avec le menu et le pied de page, CSS fidèle aux maquettes Figma.",
+  plan: [
+    "✓ base.html.twig = le cadre commun : {% include %} du menu et du pied de page autour du {% block body %}",
+    "✓ partials/_header.html.twig : logo à gauche ; Connexion / Inscription, ou les 4 liens si {% if app.user %}",
+    "✓ partials/_footer.html.twig : © GreenGoodies - {{ 'now'|date('Y') }}, l'année se met à jour toute seule",
+    "✓ assets/styles/app.css (AssetMapper) : couleurs, police Inter et marges relevées dans Figma",
+    "✓ make:controller Home : page d'accueil vide à l'adresse /, pour voir le gabarit",
+    "Images exportées de Figma, converties en WebP (green code)"
+  ],
+  pourquoi: [
+    "Le menu et le pied de page sont écrits une seule fois : chaque page fait {% extends 'base.html.twig' %}.",
+    "path('app_home') plutôt qu'une adresse écrite en dur : si l'adresse change, les liens suivent.",
+    "AssetMapper ajoute une empreinte au nom des fichiers (logo-icFYikt.png) : le navigateur peut les garder en cache sans risque."
+  ] },
 { titre: "Inscription et connexion", statut: "todo",
   objectif: "make:registration-form et make:security:form-login, validations et connexion automatique après inscription." },
 { titre: "Accueil et page produit", statut: "todo",

@@ -1,0 +1,21 @@
+{# Menu du site : logo a gauche, liens a droite.
+   Les liens pointent vers # pour l'instant, on les branche quand les pages existeront. #}
+<header class="header">
+    {# le logo ramène a l'accueil (route app_home de HomeController) #}
+    <a href="{{ path('app_home') }}" class="header-logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Green Goodies" width="124" height="19">
+    </a>
+
+    <nav class="header-nav">
+        {# app.user = l'utilisateur connecté, vide si personne n'est connecté #}
+        {% if app.user %}
+            <a href="#">Nos produits</a>
+            <a href="#">Mon panier</a>
+            <a href="#">Mon compte</a>
+            <a href="#">Déconnexion</a>
+        {% else %}
+            <a href="#">Connexion</a>
+            <a href="#">Inscription</a>
+        {% endif %}
+    </nav>
+</header>
