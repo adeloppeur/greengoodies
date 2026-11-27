@@ -270,7 +270,8 @@ const STEPS = [
 },
 {
   titre: "Entités et fixtures",
-  statut: "current",
+  statut: "done",
+  date: "27/11/2026",
   objectif: "Créer les 4 tables de la base (comme 4 feuilles Excel reliées entre elles), puis les remplir avec des données de démonstration.",
   schema: `
     <p class="schema-intro">La base = un classeur, chaque entité = une feuille. Les pastilles de couleur sont les liens entre les feuilles (comme une RECHERCHEV). Exemple : Marie a une commande validée (n°12) et un panier en cours (n°13). À droite de chaque feuille : ses relations. Clique sur le nom d'une entité (bouton vert) pour aller voir sa feuille.</p>
@@ -280,7 +281,7 @@ const STEPS = [
         <div class="sheet"><h4>User <small>table user · les clients</small></h4><table>
           <tr><th>id</th><th>firstname</th><th>email</th><th>api_active</th></tr>
           <tr><td><span class="pill u">1</span></td><td>Marie</td><td>marie@mail.fr</td><td>false</td></tr>
-          <tr><td><span class="pill u">2</span></td><td>Test</td><td>test@greengoodies.fr</td><td>true</td></tr></table></div>
+          <tr><td><span class="pill u">2</span></td><td>Test</td><td>test@greengoodies.fr</td><td>false</td></tr></table></div>
         <div class="rels"><h5>Relations</h5>
           <div class="rel">
             <span class="kind">OneToMany · côté inverse</span>
@@ -356,11 +357,12 @@ const STEPS = [
     "✓ make:user puis make:entity User : email, mot de passe haché, prénom, nom, apiActive (false par défaut) ; table user créée",
     "✓ make:entity Product : name, shortDescription, fullDescription (text), price (float), picture ; table product créée",
     "✓ make:entity Order : relation customer → User (ManyToOne), status (cart / validated), validatedAt ; table order créée",
-    "make:entity OrderItem : relations parentOrder → Order et product → Product, quantity, unitPrice ; migration à lancer",
-    "Une migration par table : make:migration puis doctrine:migrations:migrate",
-    "Installation de orm-fixtures et zenstruck/foundry (méthode du cours)",
-    "Factories + AppFixtures : au moins 3 produits, 1 compte de test avec l'API activée, quelques clients",
-    "doctrine:fixtures:load : remplit la base"
+    "✓ make:entity OrderItem : relations parentOrder → Order et product → Product, quantity, unitPrice ; table order_item créée",
+    "✓ Une migration par table : make:migration puis doctrine:migrations:migrate (4 migrations)",
+    "✓ symfony composer require orm-fixtures zenstruck/foundry --dev (partie 3, chapitre 5 du cours)",
+    "✓ make:factory Product et User ; Faker en français (fr_FR) ; UserFactory hache le mot de passe (afterInstantiate)",
+    "✓ AppFixtures : les 9 produits de la maquette Figma + le compte test@greengoodies.fr / password (API désactivée)",
+    "✓ doctrine:fixtures:load : 9 produits et 1 compte en base, mot de passe haché ($2y$13$…)"
   ],
   pourquoi: [
     "Le panier est une commande au statut « panier » : pas de table en plus ; à la validation elle passe à « validée » avec une date.",
@@ -368,10 +370,13 @@ const STEPS = [
     "Les champs de Product reprennent exactement le schéma Product de l'API (name, shortDescription, fullDescription, price, picture).",
     "Supprimer un utilisateur supprime ses commandes (bouton « Supprimer mon compte »).",
     "user et order sont des mots réservés en SQL : le Maker les entoure d'accents graves (`user`, `order`) ; il refuse aussi user et order comme noms de propriété, d'où customer et parentOrder.",
-    "Les totaux (ligne et commande) ne sont pas stockés : getTotal() les calcule à partir des lignes."
+    "Les totaux (ligne et commande) ne sont pas stockés : getTotal() les calcule à partir des lignes.",
+    "Fixtures = la recette écrite une fois : une commande remplit la même base sur n'importe quel PC (perso, pro, correcteur).",
+    "Produits repris de la maquette plutôt qu'inventés par Faker : le site ressemble aux maquettes et chaque produit a sa photo.",
+    "Pas de gestion des produits dans l'énoncé : en production, le catalogue viendrait d'un back-office."
   ]
 },
-{ titre: "Structure et design", statut: "todo",
+{ titre: "Structure et design", statut: "current",
   objectif: "base.html.twig avec le menu et le pied de page, CSS fidèle aux maquettes Figma." },
 { titre: "Inscription et connexion", statut: "todo",
   objectif: "make:registration-form et make:security:form-login, validations et connexion automatique après inscription." },
