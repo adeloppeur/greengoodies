@@ -169,8 +169,67 @@ const STEPS = [
     ["À quoi sert public/index.php ?", "C'est le front controller : toutes les requêtes passent par lui, il démarre le Kernel qui trouve la route et appelle le contrôleur."]
   ]
 },
-{ titre: "Base de données et GitHub", statut: "todo",
-  objectif: "Relier le projet à PostgreSQL (.env.local) et publier le code sur un dépôt GitHub." },
+{
+  titre: "Publier le code sur GitHub",
+  statut: "done",
+  date: "27/11/2026",
+  objectif: "Héberger le code sur GitHub, comme le demandent les spécifications, et pouvoir le montrer à l'évaluateur.",
+  commandes: [
+    ["git add docs/\ngit commit -m \"Ajout de la timeline du projet\"", "Enregistre la timeline dans l'historique Git (commit)."],
+    ["git remote add origin https://github.com/adeloppeur/greengoodies.git", "Indique à Git où se trouve la copie en ligne (le « remote » nommé origin)."],
+    ["git push -u origin master", "Envoie les commits sur GitHub ; -u relie la branche locale à celle de GitHub pour les prochains push."]
+  ],
+  fichiers: [
+    ".gitignore : créé par symfony new, il exclut vendor/, var/ et .env.local (secrets)",
+    "docs/timeline.html : ce support de présentation"
+  ],
+  resultat: [
+    "Dépôt public : https://github.com/adeloppeur/greengoodies",
+    "3 commits en ligne sur la branche master",
+    "Aucun secret publié : .env.local n'est jamais versionné"
+  ],
+  pourquoi: [
+    "Les spécifications imposent un code « versionné avec Git et hébergé sur GitHub ».",
+    "Un commit à la fin de chaque étape, avec un message clair : l'historique raconte la construction du projet et sert de filet de sécurité.",
+    "Dépôt public pour que l'évaluateur puisse le consulter."
+  ],
+  cours: ["Versionner son projet avec Git (Partie 1, chapitre 2)", "Environnements & .env : .env.local non versionné"],
+  questions: [
+    ["Où sont les mots de passe de la base ?", "Dans .env.local, sur le poste uniquement : il est exclu par .gitignore, donc jamais publié sur GitHub."],
+    ["Pourquoi des petits commits ?", "Chaque commit correspond à une étape qui fonctionne : on peut revenir en arrière et l'historique est lisible."]
+  ]
+},
+{
+  titre: "Base de données",
+  statut: "done",
+  date: "27/11/2026",
+  objectif: "Relier l'application à PostgreSQL et créer la base vide greengoodies.",
+  commandes: [
+    ["DATABASE_URL=\"postgresql://postgres:********@127.0.0.1:5432/greengoodies?serverVersion=18&charset=utf8\"", "Ligne écrite dans .env.local : la plateforme, l'utilisateur, le mot de passe, l'hôte (le poste), le port, le nom de la base et la version du serveur."],
+    ["symfony console doctrine:database:create", "Doctrine se connecte à PostgreSQL et crée la base greengoodies."],
+    ["symfony console dbal:run-sql \"SELECT current_database(), version()\"", "Vérifie la connexion : la base répond."]
+  ],
+  fichiers: [
+    ".env.local : DATABASE_URL avec le mot de passe, propre au poste",
+    ".env : valeurs par défaut sans secret, versionnées",
+    "config/packages/doctrine.yaml : lit DATABASE_URL"
+  ],
+  resultat: [
+    "Base greengoodies créée sur PostgreSQL 18.6",
+    "Connexion vérifiée depuis Symfony",
+    ".env.local ignoré par Git : le mot de passe n'est pas sur GitHub"
+  ],
+  pourquoi: [
+    "PostgreSQL est le SGBDR utilisé dans le cours ; les données de GreenGoodies (utilisateurs, produits, commandes) sont liées entre elles, d'où une base relationnelle.",
+    "Le DSN est dans .env.local et pas dans .env : .env est versionné, .env.local reste sur le poste. Aucun secret n'est publié.",
+    "serverVersion=18 indique à Doctrine la version exacte du serveur, pour générer un SQL adapté."
+  ],
+  cours: ["Doctrine : connexion à la base", "Environnements & .env", "SGBDR et DSN (Partie 2)"],
+  questions: [
+    ["Quelle différence entre .env et .env.local ?", ".env contient les valeurs par défaut et est versionné ; .env.local les surcharge sur le poste et n'est jamais publié."],
+    ["Pourquoi une base relationnelle ?", "Les commandes sont liées aux utilisateurs et aux produits : les relations (clés étrangères) garantissent la cohérence des données."]
+  ]
+},
 { titre: "Entités et fixtures", statut: "todo",
   objectif: "Créer User, Product, Order et OrderItem, les migrations, puis au moins 3 produits avec Foundry." },
 { titre: "Structure et design", statut: "todo",
