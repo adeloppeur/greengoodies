@@ -75,6 +75,44 @@ pre{margin:0;background:var(--code);border:1px solid var(--line);border-radius:8
 .qa dt{font-weight:600;margin-top:8px}
 .qa dd{margin:2px 0 0;color:var(--muted)}
 
+/* Schéma « feuilles Excel » */
+.schema-intro{margin:0 0 12px;color:var(--muted)}
+.sheets{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:700px){.sheets{grid-template-columns:1fr}}
+.sheet{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.sheet h4{margin:0;padding:8px 12px;font-size:.95rem;border-bottom:1px solid var(--line)}
+.sheet h4 small{font-weight:400;color:var(--muted)}
+.sheet table{width:100%;border-collapse:collapse;font-size:.85rem}
+.sheet th{text-align:left;font-weight:600;color:var(--muted);padding:5px 10px;background:var(--bg)}
+.sheet td{padding:5px 10px;border-top:1px solid var(--line)}
+.pill{display:inline-block;padding:0 9px;border-radius:99px;font-weight:700;font-size:.82rem}
+.pill.u{background:#EEEDFE;color:#3C3489}.pill.o{background:#E1F5EE;color:#085041}.pill.p{background:#FAECE7;color:#712B13}
+.st{display:inline-block;padding:0 9px;border-radius:99px;font-size:.82rem;font-weight:600}
+.st.cart,.fbox.cart{background:#FAEEDA;color:#633806}.st.ok,.fbox.ok{background:#EAF3DE;color:#27500A}
+.erows{display:flex;flex-direction:column;gap:14px}
+.erow{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:12px;align-items:start;border-radius:12px;scroll-margin:90px}
+@media (max-width:760px){.erow{grid-template-columns:1fr}}
+.erow .sheet{overflow-x:auto}
+.erow.flash .sheet,.erow.flash .rels{animation:flash 1.6s ease}
+@keyframes flash{0%,60%{box-shadow:0 0 0 4px var(--green)}100%{box-shadow:0 0 0 0 transparent}}
+.rels{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:10px 12px}
+.rels h5{margin:0 0 6px;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.rel + .rel{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.kind{display:inline-block;font-size:.72rem;font-weight:700;color:var(--green-dark);background:var(--green-soft);padding:1px 8px;border-radius:99px;margin-bottom:6px}
+.rels.none .kind{background:transparent;border:1px solid var(--line);color:var(--muted)}
+.rel-line{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-family:Consolas,"Cascadia Mono",monospace;font-size:.82rem}
+.col{padding:1px 8px;border-radius:6px;font-weight:600}
+.col.u{background:#EEEDFE;color:#3C3489}.col.o{background:#E1F5EE;color:#085041}.col.p{background:#FAECE7;color:#712B13}
+.arr{color:var(--muted);font-weight:700}
+button.rel-link{padding:2px 10px;border-radius:6px;font-size:.82rem;font-family:inherit}
+button.rel-link:hover{background:var(--green-dark)}
+.rel p{margin:6px 0 0;font-size:.85rem;color:var(--muted)}
+.rel code{font-size:.82rem;color:var(--ink)}
+.chain{margin:12px 0 0;font-size:.9rem}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px}
+.fbox{padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);font-size:.9rem}
+.farrow{color:var(--muted);font-size:.9rem}
+
 /* Mode présentation */
 #slides{position:fixed;inset:0;z-index:20;background:var(--bg);display:none;flex-direction:column}
 #slides.on{display:flex}
@@ -230,8 +268,109 @@ const STEPS = [
     ["Pourquoi une base relationnelle ?", "Les commandes sont liées aux utilisateurs et aux produits : les relations (clés étrangères) garantissent la cohérence des données."]
   ]
 },
-{ titre: "Entités et fixtures", statut: "todo",
-  objectif: "Créer User, Product, Order et OrderItem, les migrations, puis au moins 3 produits avec Foundry." },
+{
+  titre: "Entités et fixtures",
+  statut: "current",
+  objectif: "Créer les 4 tables de la base (comme 4 feuilles Excel reliées entre elles), puis les remplir avec des données de démonstration.",
+  schema: `
+    <p class="schema-intro">La base = un classeur, chaque entité = une feuille. Les pastilles de couleur sont les liens entre les feuilles (comme une RECHERCHEV). Exemple : Marie a une commande validée (n°12) et un panier en cours (n°13). À droite de chaque feuille : ses relations. Clique sur le nom d'une entité (bouton vert) pour aller voir sa feuille.</p>
+    <div class="erows">
+
+      <div class="erow" data-entity="User">
+        <div class="sheet"><h4>User <small>table user · les clients</small></h4><table>
+          <tr><th>id</th><th>firstname</th><th>email</th><th>api_active</th></tr>
+          <tr><td><span class="pill u">1</span></td><td>Marie</td><td>marie@mail.fr</td><td>false</td></tr>
+          <tr><td><span class="pill u">2</span></td><td>Test</td><td>test@greengoodies.fr</td><td>true</td></tr></table></div>
+        <div class="rels"><h5>Relations</h5>
+          <div class="rel">
+            <span class="kind">OneToMany · côté inverse</span>
+            <div class="rel-line"><span class="col u">user.id</span><span class="arr">←</span><button class="rel-link" data-target="Order">Order</button><span class="col u">.customer_id</span></div>
+            <p>Un client → plusieurs commandes. Aucune colonne dans user : <code>$user->getOrders()</code> va chercher les commandes dont customer_id vaut son id. orphanRemoval : supprimer le client supprime ses commandes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="erow" data-entity="Product">
+        <div class="sheet"><h4>Product <small>table product · le catalogue</small></h4><table>
+          <tr><th>id</th><th>name</th><th>price</th><th>picture</th></tr>
+          <tr><td><span class="pill p">1</span></td><td>Kit d'hygiène</td><td>24.99</td><td>kit.webp</td></tr>
+          <tr><td><span class="pill p">2</span></td><td>Shot tropical</td><td>4.5</td><td>shot.webp</td></tr>
+          <tr><td><span class="pill p">3</span></td><td>Gourde en bois</td><td>16.9</td><td>gourde.webp</td></tr></table></div>
+        <div class="rels none"><h5>Relations</h5>
+          <div class="rel">
+            <span class="kind">aucune propriété dans Product</span>
+            <div class="rel-line"><span class="col p">product.id</span><span class="arr">←</span><button class="rel-link" data-target="OrderItem">OrderItem</button><span class="col p">.product_id</span></div>
+            <p>Les lignes de commande pointent vers le produit, mais Product ne les connaît pas : on n'a jamais besoin de partir d'un produit pour trouver ses commandes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="erow" data-entity="Order">
+        <div class="sheet"><h4>Order <small>table order · les commandes</small></h4><table>
+          <tr><th>id</th><th>customer_id</th><th>status</th><th>validated_at</th></tr>
+          <tr><td><span class="pill o">12</span></td><td><span class="pill u">1</span></td><td><span class="st ok">validated</span></td><td>25/11/2026</td></tr>
+          <tr><td><span class="pill o">13</span></td><td><span class="pill u">1</span></td><td><span class="st cart">cart</span></td><td>null</td></tr></table></div>
+        <div class="rels"><h5>Relations</h5>
+          <div class="rel">
+            <span class="kind">ManyToOne · porte la colonne</span>
+            <div class="rel-line"><span class="col u">order.customer_id</span><span class="arr">→</span><button class="rel-link" data-target="User">User</button><span class="col u">.id</span></div>
+            <p>Plusieurs commandes → un client. Obligatoire (nullable: false). onDelete CASCADE : si le client est supprimé, PostgreSQL supprime ses commandes.</p>
+          </div>
+          <div class="rel">
+            <span class="kind">OneToMany · côté inverse</span>
+            <div class="rel-line"><span class="col o">order.id</span><span class="arr">←</span><button class="rel-link" data-target="OrderItem">OrderItem</button><span class="col o">.parent_order_id</span></div>
+            <p>Une commande → plusieurs lignes : <code>$order->getItems()</code>. orphanRemoval : une ligne retirée est supprimée (« Vider le panier »).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="erow" data-entity="OrderItem">
+        <div class="sheet"><h4>OrderItem <small>table order_item · le détail</small></h4><table>
+          <tr><th>parent_order_id</th><th>product_id</th><th>quantity</th><th>unit_price</th></tr>
+          <tr><td><span class="pill o">12</span></td><td><span class="pill p">3</span></td><td>1</td><td>16.9</td></tr>
+          <tr><td><span class="pill o">12</span></td><td><span class="pill p">2</span></td><td>2</td><td>4.5</td></tr>
+          <tr><td><span class="pill o">13</span></td><td><span class="pill p">1</span></td><td>1</td><td>24.99</td></tr></table></div>
+        <div class="rels"><h5>Relations</h5>
+          <div class="rel">
+            <span class="kind">ManyToOne · porte la colonne</span>
+            <div class="rel-line"><span class="col o">order_item.parent_order_id</span><span class="arr">→</span><button class="rel-link" data-target="Order">Order</button><span class="col o">.id</span></div>
+            <p>Plusieurs lignes → une commande. onDelete CASCADE : la commande supprimée emporte ses lignes.</p>
+          </div>
+          <div class="rel">
+            <span class="kind">ManyToOne · porte la colonne</span>
+            <div class="rel-line"><span class="col p">order_item.product_id</span><span class="arr">→</span><button class="rel-link" data-target="Product">Product</button><span class="col p">.id</span></div>
+            <p>Plusieurs lignes → un produit. Pas de cascade : supprimer une commande ne retire jamais un produit du catalogue.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <p class="chain">Suppression en chaîne (« Supprimer mon compte ») : <b>user</b> → <b>order</b> → <b>order_item</b>. Les produits restent.</p>
+    <div class="flow">
+      <span class="fbox">Ajouter au panier</span><span class="farrow">→</span>
+      <span class="fbox cart">Commande « panier »</span><span class="farrow">→ Valider →</span>
+      <span class="fbox ok">Commande « validée » + date</span><span class="farrow">→</span>
+      <span class="fbox">Visible dans Mon compte</span>
+    </div>`,
+  plan: [
+    "✓ make:user puis make:entity User : email, mot de passe haché, prénom, nom, apiActive (false par défaut) ; table user créée",
+    "✓ make:entity Product : name, shortDescription, fullDescription (text), price (float), picture ; table product créée",
+    "✓ make:entity Order : relation customer → User (ManyToOne), status (cart / validated), validatedAt ; table order créée",
+    "make:entity OrderItem : relations parentOrder → Order et product → Product, quantity, unitPrice ; migration à lancer",
+    "Une migration par table : make:migration puis doctrine:migrations:migrate",
+    "Installation de orm-fixtures et zenstruck/foundry (méthode du cours)",
+    "Factories + AppFixtures : au moins 3 produits, 1 compte de test avec l'API activée, quelques clients",
+    "doctrine:fixtures:load : remplit la base"
+  ],
+  pourquoi: [
+    "Le panier est une commande au statut « panier » : pas de table en plus ; à la validation elle passe à « validée » avec une date.",
+    "OrderItem garde le prix payé : une ancienne commande ne change pas si le prix d'un produit change.",
+    "Les champs de Product reprennent exactement le schéma Product de l'API (name, shortDescription, fullDescription, price, picture).",
+    "Supprimer un utilisateur supprime ses commandes (bouton « Supprimer mon compte »).",
+    "user et order sont des mots réservés en SQL : le Maker les entoure d'accents graves (`user`, `order`) ; il refuse aussi user et order comme noms de propriété, d'où customer et parentOrder.",
+    "Les totaux (ligne et commande) ne sont pas stockés : getTotal() les calcule à partir des lignes."
+  ]
+},
 { titre: "Structure et design", statut: "todo",
   objectif: "base.html.twig avec le menu et le pied de page, CSS fidèle aux maquettes Figma." },
 { titre: "Inscription et connexion", statut: "todo",
@@ -258,6 +397,13 @@ const LABEL = {done:"Fait", current:"En cours", todo:"À venir"};
 function list(items){ return "<ul>" + items.map(i => "<li>" + esc(i) + "</li>").join("") + "</ul>"; }
 
 function detail(s){
+  if (!s.commandes && s.plan) return `
+    <p class="goal"><strong>Objectif :</strong> ${esc(s.objectif)}</p>
+    ${s.schema ? `<div class="box full schema">${s.schema}</div>` : ""}
+    <div class="grid" style="margin-top:14px">
+      <div class="box"><h3>Ce qui va être fait</h3>${list(s.plan)}</div>
+      <div class="box"><h3>Pourquoi ces choix</h3>${list(s.pourquoi || [])}</div>
+    </div>`;
   if (!s.commandes) return `<p class="goal">${esc(s.objectif)}</p>`;
   let cmds = s.commandes.map(([c, n]) => `<pre>${esc(c)}</pre><p class="cmd-note">${esc(n)}</p>`).join("");
   let qa = (s.questions || []).map(([q, r]) => `<dt>${esc(q)}</dt><dd>${esc(r)}</dd>`).join("");
@@ -275,7 +421,7 @@ function detail(s){
 
 function render(){
   $("#timeline").innerHTML = STEPS.map((s, i) => `
-    <section class="step ${s.statut}${s.statut === "done" && i === lastDone() ? " open" : ""}" data-i="${i}">
+    <section class="step ${s.statut}${s.statut === "current" ? " open" : ""}" data-i="${i}">
       <span class="dot">${s.statut === "done" ? "✓" : i + 1}</span>
       <div class="card">
         <button class="head" aria-expanded="false">
@@ -298,6 +444,17 @@ function render(){
   $("#progressFill").style.width = (done / STEPS.length * 100) + "%";
 }
 function lastDone(){ let k = -1; STEPS.forEach((s, i) => { if (s.statut === "done") k = i; }); return k; }
+
+/* Clic sur une entité liée : on va voir sa feuille dans le même schéma */
+document.addEventListener("click", e => {
+  const link = e.target.closest(".rel-link");
+  if (!link) return;
+  const scope = link.closest(".schema") || document;
+  const row = scope.querySelector(`.erow[data-entity="${link.dataset.target}"]`);
+  if (!row) return;
+  row.scrollIntoView({behavior: "smooth", block: "center"});
+  row.classList.remove("flash"); void row.offsetWidth; row.classList.add("flash");
+});
 
 $("#toggleAll").addEventListener("click", e => {
   const steps = document.querySelectorAll(".step");
